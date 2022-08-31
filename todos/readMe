@@ -1,0 +1,39 @@
+NOTES:
+
+I need a todo backend and the following is what I want to support
+
+-A route that will return all items
+GET: /todos
+return an array of todo objects
+
+-A route that will return a single item based on the ID provided
+GET: /todos/:id
+:id is the id of the todo item to return if it exists
+otherwise null
+
+-A route that will delete a single item based on the ID provided
+DELETE /todos/:id
+:id is the id of the todo item to delete
+return the item that was deleted
+
+-A route that will add a new todo item
+POST /todos
+body should include object that has a description
+ex: {"description": "water garden"}
+
+-A route that will update an existing item based on the ID provided
+PUT /todos/:id
+body should include object that has a description and a completed flag
+ex: /todos/5, body={"description": "mow the yard", "completed": true}
+
+Todo Object:
+{
+    "id": the id of the todo,
+    "description": what the todo is,
+    "completed": true/false based on status,
+}
+{
+    "id": 34234,
+    "description": "get funky",
+    "completed": true,
+}
