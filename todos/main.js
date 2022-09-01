@@ -100,3 +100,83 @@ app.put("/todos/:id", function (req, res){
 
 
 });
+
+let personDB = [];
+//GET all items
+app.get("/person", function (req, res){
+    console.log("GET /person");
+    res.json(personDB); //irl this is a bad idea, but we wont have enough data to mess anything up
+})
+//GET a specific item based on id - loop through the array to find
+app.get("/person/:id", function (req, res){
+    console.log("GET /person/:id");
+    //find id from route
+    let myId = req.params.id;
+    //find item in db that matches id - .find() is a higher order loop, there are tons of ways to do this
+    let matchingItem = personDB.find(function (item,index){
+        return item.id == myId;
+    })
+    if (matchingItem){
+        res.json(matchingItem)}
+    else {res.json(null)};
+})
+//DELETE a specific item based on id
+app.delete("/person/:id", function (req, res){
+    console.log("DELETE /person/:id");
+    //find id from route
+    let myId = req.params.id;
+    //remove item from array
+
+    let matchingIndex = personDB.findIndex(function (item,index){
+        return item.id == myId;
+    })
+    // if the index is less than 0 that means no matching index was found so return null
+    if(matchingIndex <0){
+        res.json(null)
+    } else { // remove the item from the db array and return it
+        let deleted = personDB.splice(matchingIndex,1);
+        res.json(deleted)
+    }
+})
+//POST a new item
+app.post("/person", function (req, res){
+    console.log("POST /person");
+    // read the description from the req body,
+    // create an id with the randomInt function created earlier,
+    // set completion status to false
+    let name = req.body.name;
+    let id = getRandomInt();
+    let completed = false;
+    //create new object
+    let newPerson = {}
+    newPerson.name = name;
+    newPerson.id = id;
+    newPerson.completed = completed;
+    //add object to array
+    personDB.push(newPerson);
+    //return new object in res
+    res.json(newPerson);
+})
+//PUT an update to a specific item
+app.put("/person/:id", function (req, res){
+    console.log("PUT /person/id")
+    //get id from route that we will update
+    //get new description from body
+    //get new completed flag from body
+    let myId = req.params.id;
+    let description = req.body.description;
+    let completed = req.body.completed == true;
+    //get the item from db that we will update
+    let matchingItem = personDB.find(function (item,index){
+        return item.id === myId;
+    });
+    if (matchingItem){
+        matchingItem.description = description;
+        matchingItem.completed = completed;
+        res.json(matchingItem)
+    } else {
+        res.json(null);
+    }
+
+
+});
