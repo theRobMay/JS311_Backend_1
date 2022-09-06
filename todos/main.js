@@ -155,13 +155,13 @@ app.post("/person", function (req, res){
 app.put("/person/:id", function (req, res){
     console.log("PUT /person/id")
     let myId = req.params.id;
-    let description = req.body.description;
+    let name = req.body.name;
     let completed = req.body.completed == true;
     let matchingItem = personDB.find(function (item,index){
         return item.id === myId;
     });
     if (matchingItem){
-        matchingItem.description = description;
+        matchingItem.name = name;
         matchingItem.completed = completed;
         res.json(matchingItem)
     } else {
