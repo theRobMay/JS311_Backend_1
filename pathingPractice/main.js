@@ -31,7 +31,7 @@ app.get("/todos", function (req, res){
 })
 //GET a specific item based on id - loop through the array to find
 app.get("/todos/:id", function (req, res){
-    console.log("GET /todos/:id");
+    console.log("GET /person/:id");
     //find id from route
     let myId = req.params.id;
     //find item in db that matches id - .find() is a higher order loop, there are tons of ways to do this
@@ -44,7 +44,7 @@ app.get("/todos/:id", function (req, res){
 })
 //DELETE a specific item based on id
 app.delete("/todos/:id", function (req, res){
-    console.log("DELETE /todos/:id");
+    console.log("DELETE /person/:id");
     //find id from route
     let myId = req.params.id;
     //remove item from array
@@ -62,16 +62,16 @@ app.delete("/todos/:id", function (req, res){
 })
 //POST a new item
 app.post("/todos", function (req, res){
-    console.log("POST /todos");
+    console.log("POST /person");
     // read the description from the req body,
     // create an id with the randomInt function created earlier,
     // set completion status to false
-    let description = req.body.description;
+    let name = req.body.name;
     let id = getRandomInt();
     let completed = false;
     //create new object
     let newItem = {}
-    newItem.description = description;
+    newItem.name = name;
     newItem.id = id;
     newItem.completed = completed;
     //add object to array
@@ -81,19 +81,19 @@ app.post("/todos", function (req, res){
 })
 //PUT an update to a specific item
 app.put("/todos/:id", function (req, res){
-    console.log("PUT /todos/id")
+    console.log("PUT /person/id")
     //get id from route that we will update
     //get new description from body
     //get new completed flag from body
     let myId = req.params.id;
-    let description = req.body.description;
+    let name = req.body.name;
     let completed = req.body.completed == true;
     //get the item from db that we will update
     let matchingItem = db.find(function (item,index){
         return item.id === myId;
     });
     if (matchingItem){
-        matchingItem.description = description;
+        matchingItem.name = name;
         matchingItem.completed = completed;
         res.json(matchingItem)
     } else {
@@ -104,17 +104,17 @@ app.put("/todos/:id", function (req, res){
 });
 
 let personDB = [];
-
-app.get("/person", function (req, res){
+//GET all items
+app.get("/todos", function (req, res){
     console.log("GET /person");
-    res.json(personDB);
+    res.json(personDB); //irl this is a bad idea, but we wont have enough data to mess anything up
 })
-
-app.get("/person/:id", function (req, res){
+//GET a specific item based on id - loop through the array to find
+app.get("/todos/:id", function (req, res){
     console.log("GET /person/:id");
     //find id from route
     let myId = req.params.id;
-
+    //find item in db that matches id - .find() is a higher order loop, there are tons of ways to do this
     let matchingItem = personDB.find(function (item,index){
         return item.id == myId;
     })
@@ -122,41 +122,53 @@ app.get("/person/:id", function (req, res){
         res.json(matchingItem)}
     else {res.json(null)};
 })
-
-app.delete("/person/:id", function (req, res){
+//DELETE a specific item based on id
+app.delete("/todos/:id", function (req, res){
     console.log("DELETE /person/:id");
+    //find id from route
     let myId = req.params.id;
-
+    //remove item from array
 
     let matchingIndex = personDB.findIndex(function (item,index){
         return item.id == myId;
     })
-
+    // if the index is less than 0 that means no matching index was found so return null
     if(matchingIndex <0){
         res.json(null)
-    } else {
+    } else { // remove the item from the db array and return it
         let deleted = personDB.splice(matchingIndex,1);
         res.json(deleted)
     }
 })
-
-app.post("/person", function (req, res){
+//POST a new item
+app.post("/todos", function (req, res){
     console.log("POST /person");
+    // read the description from the req body,
+    // create an id with the randomInt function created earlier,
+    // set completion status to false
     let name = req.body.name;
     let id = getRandomInt();
     let completed = false;
+    //create new object
     let newPerson = {}
     newPerson.name = name;
     newPerson.id = id;
     newPerson.completed = completed;
+    //add object to array
     personDB.push(newPerson);
+    //return new object in res
     res.json(newPerson);
 })
-app.put("/person/:id", function (req, res){
+//PUT an update to a specific item
+app.put("/todos/:id", function (req, res){
     console.log("PUT /person/id")
+    //get id from route that we will update
+    //get new description from body
+    //get new completed flag from body
     let myId = req.params.id;
     let description = req.body.description;
     let completed = req.body.completed == true;
+    //get the item from db that we will update
     let matchingItem = personDB.find(function (item,index){
         return item.id === myId;
     });
